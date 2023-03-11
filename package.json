@@ -1,0 +1,32 @@
+{
+  "name": "utor-mod18-chal01-social-media-app",
+  "version": "1.0.0",
+  "description": "Social Media Application",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^6.0.13",
+    "dayjs": "^1.11.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ScorpionFiko/UTOR-MOD18-CHAL01-Social-Media-App.git"
+  },
+  "keywords": [
+    "node.js",
+    "express.js",
+    "NoSQL",
+    "mongo",
+    "mongoose"
+  ],
+  "author": "Stefan Marinov",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ScorpionFiko/UTOR-MOD18-CHAL01-Social-Media-App/issues"
+  },
+  "homepage": "https://github.com/ScorpionFiko/UTOR-MOD18-CHAL01-Social-Media-App#readme"
+}
