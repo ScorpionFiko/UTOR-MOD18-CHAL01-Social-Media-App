@@ -67,13 +67,16 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // adds a friend to the frient array
+  // adds a friend to the friend array
   async addFriend(req, res) {
     try {
       const dbUserData = await User.findById({ _id: req.params.userId });
       const dbFriendData = await User.findById({ _id: req.params.friendId });
-      if (!dbUserData || !dbFriendData) {
-        return res.status(404).json({ message: 'User(s) not found!' });
+      if (!dbUserData ) {
+        return res.status(404).json({ message: `User with ID ${req.params.userId} not found!` });
+      }
+      if (!dbFriendData) {
+        return res.status(404).json({ message: `Friend with ID ${req.params.friendId} not found!` });
       }
       const updatedUser = await User.findByIdAndUpdate({
         _id: req.params.userId
@@ -92,8 +95,11 @@ module.exports = {
     try {
       const dbUserData = await User.findById({ _id: req.params.userId });
       const dbFriendData = await User.findById({ _id: req.params.friendId });
-      if (!dbUserData || !dbFriendData) {
-        return res.status(404).json({ message: 'User(s) not found!' });
+      if (!dbUserData ) {
+        return res.status(404).json({ message: `User with ID ${req.params.userId} not found!` });
+      }
+      if (!dbFriendData) {
+        return res.status(404).json({ message: `Friend with ID ${req.params.friendId} not found!` });
       }
       const updatedUser = await User.findByIdAndUpdate({
         _id: req.params.userId
