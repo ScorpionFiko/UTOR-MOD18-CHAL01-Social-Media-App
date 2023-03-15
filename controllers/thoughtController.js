@@ -73,7 +73,14 @@ module.exports = {
     try {
       const dbThoughtData = await Thought.findByIdAndDelete({ _id: req.params.thoughtId });
       if (dbThoughtData) {
-        res.status(200).json(dbThoughtData);
+        await User.findByIdAndUpdate({
+          _id: dbThoughtData.userId
+        }, {
+          $pull: { thoughts: req.params.thoughtId }
+        }, {
+          new: true
+        });
+        res.status(201).json({ message: `Thought with ID: ${req.params.thoughtId}  was deleted!` });
       } else {
         res.status(404).json({ message: `Thought with ID: ${req.params.thoughtId} not found! Nothing was deleted!` });
       }
@@ -103,9 +110,9 @@ module.exports = {
   // removes a reaction from a thought. Checks if reaction exists and then proceeds with removal
   async deleteReaction(req, res) {
     try {
-      const reactionExists = await Thought.find({'reactions.reactionID': req.params.reactionId});
+      const reactionExists = await Thought.find({ 'reactions.reactionID': req.params.reactionId });
       if (reactionExists.length === 0) {
-        return res.status(404).json({message: `Reaction with ID: ${req.params.reactionId} not found. Nothing was deleted.`});
+        return res.status(404).json({ message: `Reaction with ID: ${req.params.reactionId} not found. Nothing was deleted.` });
       }
       const dbThoughtData = await Thought.findOneAndUpdate(
         { _id: req.params.thoughtId },
@@ -113,9 +120,9 @@ module.exports = {
         { new: true }
       );
       if (dbThoughtData) {
-        res.status(200).json(dbThoughtData);
+        res.status(200).json({ message: `Reaction with ID: ${req.params.reactionId} was deleted!` });
       } else {
-        res.status(404).json({ message: `Thought with ID: ${req.params.thoughtId} not found! No reactions were deleted!` });
+        res.status(404).json({ message: `Though with ID: ${req.params.thoughtId} not found! No reactions were deleted!` });
       }
     } catch (err) {
       res.status(500).json(err);

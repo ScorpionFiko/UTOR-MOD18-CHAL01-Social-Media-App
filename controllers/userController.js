@@ -1,6 +1,4 @@
 const { User, Thought } = require('../models');
-// when deleting a user attempt to remove any remaining reactions that have the userId
-// const {ObjectId} = require('mongoose');
 
 module.exports = {
   // gets all users from the database
@@ -43,26 +41,14 @@ module.exports = {
 
   async deleteUser(req, res) {
     try {
-      let dbThoughtData = [], dbReactionData = [];
       const dbUserData = await User.findByIdAndDelete({ _id: req.params.userId });
       // delete user thoughts and reactions
       if (dbUserData) {
-        dbThoughtData = await Thought.deleteMany({ userId: req.params.userId });
-        // when deleting a user attempt to remove any remaining reactions that have the userId
-        // dbReactionData = await Thought.findByIdAndUpdate(
-        //   {reactions : {userId: ObjectId(req.params.userId)}},
-        //   {$pull: { reactions: { userId: req.params.userId } }},
-        //   {new:true}
-        // );
+        await Thought.deleteMany({ userId: req.params.userId });
+        res.status(202).json({ message: `User with ID ${req.params.userId} and their thoughts were removed from the database!` });
       } else {
         return res.status(404).json({message: `User with ID ${req.params.userId} is not found!` });
       }
-      const deletedUser = {
-        user: dbUserData,
-        thought: dbThoughtData,
-        reaction: dbReactionData
-      };
-      res.status(202).json(deletedUser);
     } catch (err) {
       res.status(500).json(err);
     }
@@ -101,14 +87,11 @@ module.exports = {
       if (!dbFriendData) {
         return res.status(404).json({ message: `Friend with ID ${req.params.friendId} not found!` });
       }
-      const updatedUser = await User.findByIdAndUpdate({
-        _id: req.params.userId
-      }, {
-        $pull: { friends: dbFriendData._id }
-      }, {
-        new: true,
-      });
-      res.status(200).json(updatedUser);
+      await User.findByIdAndUpdate(
+        { _id: req.params.userId },
+        { $pull: { friends: dbFriendData._id } },
+        { new: true, });
+      res.status(200).json({ message: `Friend with ID ${req.params.friendId} was removed from the friends list!` });
 
     } catch (err) {
       res.status(500).json(err);
